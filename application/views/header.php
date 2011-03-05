@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo $pagename; ?> || <?php echo $sitename; ?></title>
+	<title><?php echo $pagename; ?> || AGBS</title>
 </head>
 <body>

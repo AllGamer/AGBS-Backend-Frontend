@@ -9,7 +9,8 @@ class Welcome extends CI_Controller {
 
 	function index()
 	{
-		$this->load->view('header');
+		$headdata = array('pagename' => 'Welcome!');
+		$this->load->view('header', $headdata);
 		$this->load->view('welcome_message');
 		$this->load->view('footer');
 	}
