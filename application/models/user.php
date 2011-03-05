@@ -1,6 +1,6 @@
 <?php
 
-class User_model extends CI_Model
+class User extends CI_Model
 {
 	private $user_id = -1; // -1 = unloaded, create record, anything = update
 	public $email = '';

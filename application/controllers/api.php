@@ -5,7 +5,7 @@ class Api extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('server');
+		$this->load->model('Server');
 		$this->_get_output_type();
 	}
 	

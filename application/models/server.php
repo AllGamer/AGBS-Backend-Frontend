@@ -1,6 +1,6 @@
 <?php
 
-class Server_model extends CI_Model
+class Server extends CI_Model
 {
 
 	private $server_id = -1; // If -1, not yet loaded.
