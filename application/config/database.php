@@ -41,10 +41,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '';
-$db['default']['password'] = '';
-$db['default']['database'] = '';
+$db['default']['hostname'] = ':/var/lib/mysql/mysql.sock';
+$db['default']['username'] = 'crdev';
+$db['default']['password'] = 'WG%$#tEGs5$T45btST%';
+$db['default']['database'] = 'agbs';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
