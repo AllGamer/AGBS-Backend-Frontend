@@ -8,8 +8,8 @@ class User extends CI_Model
 	public $validate_key = '';
 	public $create_date = '';
 	
-	static const SUCCESS = 0;
-	static const NO_USER = -1;
+	const SUCCESS = 0;
+	const NO_USER = -1;
 	
 	function __construct()
 	{

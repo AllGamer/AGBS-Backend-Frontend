@@ -8,8 +8,8 @@ class Server extends CI_Model
 	public $server_reg_ip = ''; // registered IP, in octets, converted automatically at savetime
 	public $server_key = ''; // API key
 	
-	static const SUCCESS = 0;
-	static const NO_SERVER = -1;
+	const SUCCESS = 0;
+	const NO_SERVER = -1;
 	
 	function __construct()
 	{
