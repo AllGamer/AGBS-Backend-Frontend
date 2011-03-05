@@ -27,10 +27,27 @@ class Server_model extends CI_Model
 		}
 		// Continue!
 		$result = $q->result();
+		$this->load_result($result);
+		return self::SUCCESS;
+	}
+	
+	private function load_result($result)
+	{
 		$this->server_id = $result->server_id;
 		$this->owner_id = $result->owner_id;
 		$this->server_reg_ip = long2ip($result->server_reg_ip); // Convert to octets
 		$this->server_key = $result->server_key;
+	}
+	
+	function load_api_key($api_key)
+	{
+		$this->server_id = -1;
+		$q = $this->db->get_where('servers', array('server_key' => $api_key), 1, 0);
+		if ($q->num_rows() == 0)
+		{
+			return self::NO_SERVER;
+		}
+		$this->load_result($q->result());
 		return self::SUCCESS;
 	}
 	
