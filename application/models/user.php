@@ -27,7 +27,7 @@ class User extends CI_Model
 			return self::NO_USER;
 		}
 		
-		$result = $q->result();
+		list($result) = $q->result();
 		$this->user_id = $result->user_id;
 		$this->email = $result->email;
 		$this->password = $result->password;

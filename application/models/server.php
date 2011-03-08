@@ -26,7 +26,7 @@ class Server extends CI_Model
 			return self::NO_SERVER;
 		}
 		// Continue!
-		$result = $q->result();
+		list($result) = $q->result();
 		$this->load_result($result);
 		return self::SUCCESS;
 	}
@@ -47,7 +47,8 @@ class Server extends CI_Model
 		{
 			return self::NO_SERVER;
 		}
-		$this->load_result($q->result());
+		list($result) = $q->result();
+		$this->load_result($result);
 		return self::SUCCESS;
 	}
 	
