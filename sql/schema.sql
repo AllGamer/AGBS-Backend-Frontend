@@ -27,7 +27,7 @@ CREATE TABLE `api_key` (
   `public` varchar(45) DEFAULT NULL,
   `private` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,9 +51,15 @@ CREATE TABLE `ban` (
   `type` enum('global','server') DEFAULT NULL,
   `server_id` int(11) DEFAULT NULL,
   `status` enum('new','enforced','deleted') DEFAULT NULL,
-  `last_update` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `last_update` timestamp NULL DEFAULT NULL,
+  `player_id` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `player_id_UNIQUE` (`player_id`),
+  KEY `fk_b_s` (`server_id`),
+  KEY `fk_b_p` (`player_id`),
+  CONSTRAINT `fk_b_s` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_b_p` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +83,7 @@ CREATE TABLE `ban_flag` (
   `type` varchar(45) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,8 +106,10 @@ CREATE TABLE `ban_has_ban_flag` (
   `ban_id` int(11) NOT NULL,
   `ban_flag_id` int(11) NOT NULL,
   PRIMARY KEY (`ban_id`,`ban_flag_id`),
-  KEY `fk_ban_has_ban_flag_ban_flag1` (`ban_flag_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  KEY `fk_ban_has_ban_flag_ban_flag1` (`ban_flag_id`),
+  CONSTRAINT `fk_ban_has_ban_flag_ban1` FOREIGN KEY (`ban_id`) REFERENCES `ban` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ban_has_ban_flag_ban_flag1` FOREIGN KEY (`ban_flag_id`) REFERENCES `ban_flag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,6 +119,56 @@ CREATE TABLE `ban_has_ban_flag` (
 LOCK TABLES `ban_has_ban_flag` WRITE;
 /*!40000 ALTER TABLE `ban_has_ban_flag` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ban_has_ban_flag` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `list_has_server`
+--
+
+DROP TABLE IF EXISTS `list_has_server`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `list_has_server` (
+  `list_id` int(11) NOT NULL,
+  `server_id` int(11) NOT NULL,
+  PRIMARY KEY (`list_id`,`server_id`),
+  KEY `fk_list_has_server_l` (`list_id`),
+  KEY `fk_list_has_server_s` (`server_id`),
+  CONSTRAINT `fk_list_has_server_l` FOREIGN KEY (`list_id`) REFERENCES `serverlist` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_list_has_server_s` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `list_has_server`
+--
+
+LOCK TABLES `list_has_server` WRITE;
+/*!40000 ALTER TABLE `list_has_server` DISABLE KEYS */;
+/*!40000 ALTER TABLE `list_has_server` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `player`
+--
+
+DROP TABLE IF EXISTS `player`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `player` (
+  `id` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `player`
+--
+
+LOCK TABLES `player` WRITE;
+/*!40000 ALTER TABLE `player` DISABLE KEYS */;
+/*!40000 ALTER TABLE `player` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -132,8 +190,10 @@ CREATE TABLE `server` (
   `last_update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fs_s_pubapi` (`id`),
-  KEY `fk_s_privapi` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  KEY `fk_s_privapi` (`id`),
+  CONSTRAINT `fs_s_pubapi` FOREIGN KEY (`id`) REFERENCES `api_key` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_s_privapi` FOREIGN KEY (`id`) REFERENCES `api_key` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +221,7 @@ CREATE TABLE `server_admin` (
   `status` enum('new','verified','deleted') DEFAULT NULL,
   `last_update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,8 +245,10 @@ CREATE TABLE `server_has_admin` (
   `server_admin_id` int(11) NOT NULL,
   PRIMARY KEY (`server_id`,`server_admin_id`),
   KEY `fk_HSA_s` (`server_id`),
-  KEY `fk_SHA_a` (`server_admin_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  KEY `fk_SHA_a` (`server_admin_id`),
+  CONSTRAINT `fk_HSA_s` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SHA_a` FOREIGN KEY (`server_admin_id`) REFERENCES `server_admin` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,8 +271,10 @@ CREATE TABLE `server_has_ban` (
   `server_id` int(11) NOT NULL,
   `ban_id` int(11) NOT NULL,
   PRIMARY KEY (`server_id`,`ban_id`),
-  KEY `fk_server_has_ban_ban1` (`ban_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  KEY `fk_server_has_ban_ban1` (`ban_id`),
+  CONSTRAINT `fk_server_has_ban_server1` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_server_has_ban_ban1` FOREIGN KEY (`ban_id`) REFERENCES `ban` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,6 +284,58 @@ CREATE TABLE `server_has_ban` (
 LOCK TABLES `server_has_ban` WRITE;
 /*!40000 ALTER TABLE `server_has_ban` DISABLE KEYS */;
 /*!40000 ALTER TABLE `server_has_ban` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `server_trust`
+--
+
+DROP TABLE IF EXISTS `server_trust`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `server_trust` (
+  `truster` int(11) NOT NULL,
+  `trustee` int(11) NOT NULL,
+  `trustee_type` enum('list','server') NOT NULL,
+  PRIMARY KEY (`truster`,`trustee`,`trustee_type`),
+  KEY `fk_server_trust_1` (`truster`),
+  KEY `fk_server_trust_2` (`trustee`),
+  CONSTRAINT `fk_server_trust_1` FOREIGN KEY (`truster`) REFERENCES `server` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_server_trust_2` FOREIGN KEY (`trustee`) REFERENCES `server` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `server_trust`
+--
+
+LOCK TABLES `server_trust` WRITE;
+/*!40000 ALTER TABLE `server_trust` DISABLE KEYS */;
+/*!40000 ALTER TABLE `server_trust` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `serverlist`
+--
+
+DROP TABLE IF EXISTS `serverlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `serverlist` (
+  `id` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `last_update` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `serverlist`
+--
+
+LOCK TABLES `serverlist` WRITE;
+/*!40000 ALTER TABLE `serverlist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `serverlist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -231,4 +347,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-19 13:44:44
+-- Dump completed on 2011-04-11 21:06:12
