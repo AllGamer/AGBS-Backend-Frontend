@@ -1,12 +1,4 @@
-The AllGamer Ban System Backend/Frontend
+Bans
 ========================================
 
-NOTICE
-------
-
-This code is *not* opensource. It should *not* be shared.
-
-Coding Guidelines
------------------
-
-TBC
+This repository contains proprietary code. Distribution of said code is restricted to authorized project members.
